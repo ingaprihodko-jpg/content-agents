@@ -40,9 +40,27 @@ def collect_links(channel: str, pages: int = 10) -> list[str]:
         before = new_before
     return all_links
 
+EXCLUDED_DOMAINS = {
+    "t.me", "x.com", "telegram.me", "youtu.be",
+    "apps.apple.com", "bit.ly", "clck.ru",
+}
+
+def normalize_domain(url: str) -> str:
+    netloc = urlparse(url).netloc.lower()
+    for prefix in ("http://", "https://"):
+        if netloc.startswith(prefix):
+            netloc = netloc[len(prefix):]
+    if netloc.startswith("www."):
+        netloc = netloc[4:]
+    return netloc
+
+def count_domains(links: list[str]) -> Counter:
+    domains = (normalize_domain(l) for l in links)
+    return Counter(d for d in domains if d and d not in EXCLUDED_DOMAINS)
+
 if __name__ == "__main__":
     links = collect_links("dbeskromny", pages=15)
-    domains = Counter(urlparse(l).netloc for l in links)
+    domains = count_domains(links)
     print(f"Всего ссылок: {len(links)}")
     for domain, count in domains.most_common(30):
         print(f"{count:3d}  {domain}")
