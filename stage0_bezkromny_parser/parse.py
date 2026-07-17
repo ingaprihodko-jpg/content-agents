@@ -2,8 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 from collections import Counter
+from typing import Optional
 
-def get_channel_page(channel: str, before: int | None = None) -> str:
+def get_channel_page(channel: str, before: Optional[int] = None) -> str:
     url = f"https://t.me/s/{channel}"
     if before:
         url += f"?before={before}"
@@ -18,7 +19,7 @@ def extract_links(html: str) -> list[str]:
         if a.get("href") and not a["href"].startswith("https://t.me/")
     ]
 
-def get_earliest_post_id(html: str) -> int | None:
+def get_earliest_post_id(html: str) -> Optional[int]:
     soup = BeautifulSoup(html, "html.parser")
     ids = [
         int(msg["data-post"].split("/")[-1])
