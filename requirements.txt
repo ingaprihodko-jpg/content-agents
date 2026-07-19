@@ -1,3 +1,8 @@
 requests
 beautifulsoup4
 python-dotenv
+feedparser
+deep-translator
+trafilatura
+lxml_html_clean
+anthropic
